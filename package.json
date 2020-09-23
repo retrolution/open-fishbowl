@@ -147,6 +147,7 @@
   "scripts": {
     "lint": "eslint . && flow",
     "postinstall": "jetify",
+    "deploy": "./deploy-gh-pages.sh && gh-pages -d gh-pages",
     "validate": "npm ls"
   },
   "browser": {
