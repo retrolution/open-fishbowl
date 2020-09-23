@@ -1,12 +1,38 @@
 // @flow
 
-import { getCurrentConference } from '../base/conference';
-import { PIN_PARTICIPANT, pinParticipant, getPinnedParticipant } from '../base/participants';
+import { getCurrentConference, CONFERENCE_WILL_JOIN } from '../base/conference';
+import {
+    PIN_PARTICIPANT,
+    getPinnedParticipant,
+    pinParticipant,
+    participantUpdated,
+    getLocalParticipant
+} from '../base/participants';
 import { MiddlewareRegistry, StateListenerRegistry } from '../base/redux';
 import { SET_DOCUMENT_EDITING_STATUS } from '../etherpad';
 
-import { SET_TILE_VIEW } from './actionTypes';
+import {
+    SET_TILE_VIEW, SET_TABLE_VIEW, SET_TABLE_VIEW_SEATS, ENABLE_TABLE_VIEW_MUTTING, FORCE_SEAT_POSITION
+} from './actionTypes';
 import { setTileView } from './actions';
+
+
+let didSendCommandCount = 0;
+
+
+const checkEndpointParticipantUpdated = (store, next, { participant } = {}) => {
+    if (participant) {
+        const { id, requiredSeat } = participant;
+
+        if (requiredSeat !== undefined) {
+            store.dispatch(participantUpdated({
+                id,
+                requiredSeat,
+                local: true
+            }));
+        }
+    }
+};
 
 import './subscriber';
 
@@ -45,28 +71,110 @@ MiddlewareRegistry.register(store => next => action => {
 
     // Things to update when tile view state changes
     case SET_TILE_VIEW:
+    case SET_TABLE_VIEW: {
         if (action.enabled && getPinnedParticipant(store)) {
             store.dispatch(pinParticipant(null));
         }
+        break;
     }
 
+    case SET_TABLE_VIEW_SEATS: {
+        const { conference } = store.getState()['features/base/conference'];
+        const { id, requiredSeat } = getLocalParticipant(store.getState());
+
+        if (action.local) {
+            didSendCommandCount += 1;
+            conference
+            && conference.sendCommand(
+                SET_TABLE_VIEW_SEATS,
+                { value: action.seats || '0' },
+            );
+        }
+        if (requiredSeat >= action.seats) {
+            // my seat does not exist any more
+            store.dispatch(participantUpdated({
+                id,
+                local: true,
+                requiredSeat: null
+            }));
+        }
+
+        break;
+    }
+
+    case ENABLE_TABLE_VIEW_MUTTING: {
+        if (action.local) {
+            const { conference } = store.getState()['features/base/conference'];
+
+            conference
+            && conference.sendCommand(
+                ENABLE_TABLE_VIEW_MUTTING,
+                { value: Boolean(action.enabled) },
+            );
+        }
+        break;
+    }
+
+    case FORCE_SEAT_POSITION: {
+        checkEndpointParticipantUpdated(store, next, action);
+        break;
+    }
+
+    case CONFERENCE_WILL_JOIN: {
+        const { dispatch } = store;
+        const { conference } = action;
+
+        conference.addCommandListener(SET_TABLE_VIEW_SEATS, ({ value }) => {
+            const seats = Number.parseInt(value, 10);
+
+            if (didSendCommandCount > 0) {
+                // when we just send the command,
+                // we want wait before next value, so there is not back and fort with old value
+                didSendCommandCount -= 1;
+
+                return;
+            }
+
+            if (store.getState()['features/video-layout'].tableViewSeats === seats) {
+                return;
+            }
+
+            dispatch({
+                type: SET_TABLE_VIEW_SEATS,
+                remote: true,
+                seats
+            });
+        });
+
+        conference.addCommandListener(ENABLE_TABLE_VIEW_MUTTING, ({ value }) => {
+            dispatch({
+                type: ENABLE_TABLE_VIEW_MUTTING,
+                enabled: Boolean(value),
+                remote: true
+            });
+        });
+
+        conference.addCommandListener(FORCE_SEAT_POSITION, ({ attributes: { id, requiredSeat } }) => {
+            const { id: localParticipantId } = getLocalParticipant(store.getState());
+
+            if (id !== localParticipantId) {
+                return;
+            }
+
+            dispatch({
+                type: FORCE_SEAT_POSITION,
+                participant: {
+                    id,
+                    local: true,
+                    requiredSeat: requiredSeat == undefined ? null : Number.parseInt(requiredSeat, 10)
+                }
+            });
+        });
+    }
+    }
 
     return result;
 });
-
-/**
- * Set up state change listener to perform maintenance tasks when the conference
- * is left or failed.
- */
-StateListenerRegistry.register(
-    state => getCurrentConference(state),
-    (conference, { dispatch }, previousConference) => {
-        if (conference !== previousConference) {
-            // conference changed, left or failed...
-            // Clear tile view state.
-            dispatch(setTileView());
-        }
-    });
 
 /**
  * Respores tile view state, if it wasn't updated since then.
@@ -83,6 +191,21 @@ function _restoreTileViewState({ dispatch, getState }) {
 
     previousTileViewEnabled = undefined;
 }
+
+
+/**
+ * Set up state change listener to perform maintenance tasks when the conference
+ * is left or failed.
+ */
+StateListenerRegistry.register(
+    state => getCurrentConference(state),
+    (conference, { dispatch }, previousConference) => {
+        if (conference !== previousConference) {
+            // conference changed, left or failed...
+            // Clear tile view state.
+            dispatch(setTileView());
+        }
+    });
 
 /**
  * Stores the current tile view state and clears it.

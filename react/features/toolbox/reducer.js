@@ -12,7 +12,8 @@ import {
     SET_TOOLBOX_TIMEOUT,
     SET_TOOLBOX_TIMEOUT_MS,
     SET_TOOLBOX_VISIBLE,
-    TOGGLE_TOOLBOX_VISIBLE
+    TOGGLE_TOOLBOX_VISIBLE,
+    SET_TILE_MENU_VISIBLE
 } from './actionTypes';
 
 declare var interfaceConfig: Object;
@@ -26,6 +27,7 @@ declare var interfaceConfig: Object;
  *     enabled: boolean,
  *     hovered: boolean,
  *     overflowMenuVisible: boolean,
+ *     tileMenuVisible: boolean,
  *     timeoutID: number,
  *     timeoutMS: number,
  *     visible: boolean
@@ -87,6 +89,13 @@ function _getInitialState() {
         overflowMenuVisible: false,
 
         /**
+         * The indicator which determines whether the TileMenu is visible.
+         *
+         * @type {boolean}
+         */
+        timeMenuVisible: false,
+
+        /**
          * A number, non-zero value which identifies the timer created by a call
          * to setTimeout() with timeoutMS.
          *
@@ -131,6 +140,12 @@ ReducerRegistry.register(
             return {
                 ...state,
                 overflowMenuVisible: action.visible
+            };
+
+        case SET_TILE_MENU_VISIBLE:
+            return {
+                ...state,
+                tileMenuVisible: action.visible
             };
 
         case SET_TOOLBAR_HOVERED:

@@ -9,7 +9,8 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
  * development with webpack-dev-server.
  */
 const devServerProxyTarget
-    = process.env.WEBPACK_DEV_SERVER_PROXY_TARGET || 'https://alpha.jitsi.net';
+    = process.env.WEBPACK_DEV_SERVER_PROXY_TARGET
+        || 'https://alpha.jitsi.net';
 
 const analyzeBundle = process.argv.indexOf('--analyze-bundle') !== -1;
 const detectCircularDeps = process.argv.indexOf('--detect-circular-deps') !== -1;
@@ -36,11 +37,13 @@ const config = {
     devServer: {
         https: true,
         inline: true,
+        host: '0.0.0.0',
         proxy: {
             '/': {
                 bypass: devServerProxyBypass,
                 secure: false,
                 target: devServerProxyTarget,
+
                 headers: {
                     'Host': new URL(devServerProxyTarget).host
                 }
@@ -125,8 +128,20 @@ const config = {
                     'react-focus-lock': `${__dirname}/node_modules/react-focus-lock`
                 }
             }
-        }, {
-            test: /\.svg$/,
+        },
+        {
+            test: /\.(raw\.svg|(png|gif|jpg))$/i,
+            use: [
+                {
+                    loader: 'url-loader',
+                    options: {
+                        // fallback: require.resolve('responsive-loader')
+                    }
+                }
+            ]
+        },
+        {
+            test: /(?<!\.raw)(\.svg)/i,
             use: [ {
                 loader: '@svgr/webpack',
                 options: {
@@ -297,9 +312,16 @@ function devServerProxyBypass({ path }) {
             || path.startsWith('/lang/')
             || path.startsWith('/sounds/')
             || path.startsWith('/static/')
+            || (path.startsWith('/lang/') && path.indexOf('countries') === -1)
+            || path.endsWith('.html')
+            || path.endsWith('.wasm')
             || path.endsWith('.wasm')) {
 
         return path;
+    }
+
+    if (path.endsWith('_room')) {
+        return 'local.html';
     }
 
     const configs = module.exports;

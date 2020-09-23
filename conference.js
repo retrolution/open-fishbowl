@@ -304,6 +304,7 @@ class ConferenceConnector {
         }
 
         // not enough rights to create conference
+        case JitsiConferenceErrors.CONNECTION_ERROR:
         case JitsiConferenceErrors.AUTHENTICATION_REQUIRED: {
             // Schedule reconnect to check if someone else created the room.
             this.reconnectTimeout = setTimeout(() => {
@@ -2136,6 +2137,15 @@ export default {
             JitsiConferenceEvents.PARTICIPANT_PROPERTY_CHANGED,
             (participant, name, oldValue, newValue) => {
                 switch (name) {
+                case 'requiredSeat':
+                    APP.store.dispatch(participantUpdated({
+                        conference: room,
+                        id: participant.getId(),
+                        requiredSeat: Number.isInteger(Number.parseInt(newValue, 10))
+                            ? Number.parseInt(newValue, 10)
+                            : newValue
+                    }));
+                    break;
                 case 'remoteControlSessionStatus':
                     APP.UI.setRemoteControlActiveStatus(
                         participant.getId(),

@@ -39,6 +39,17 @@ export const SET_FULL_SCREEN = 'SET_FULL_SCREEN';
  */
 export const SET_OVERFLOW_MENU_VISIBLE = 'SET_OVERFLOW_MENU_VISIBLE';
 
+
+/**
+ * The type of the (redux) action which shows/hides the TileMenu.
+ *
+ * {
+ *     type: SET_TILE_MENU_VISIBLE,
+ *     visible: boolean
+ * }
+ */
+export const SET_TILE_MENU_VISIBLE = 'SET_TILE_MENU_VISIBLE';
+
 /**
  * The type of the action which sets the indicator which determiens whether a
  * fToolbar in the Toolbox is hovered.

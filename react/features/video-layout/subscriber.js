@@ -8,6 +8,8 @@ import { isFollowMeActive } from '../follow-me';
 import { selectParticipant } from '../large-video/actions';
 
 import { setParticipantsWithScreenShare } from './actions';
+import { ENABLE_TABLE_VIEW_MUTTING, SET_TABLE_VIEW_SEATS } from './actionTypes';
+
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -113,3 +115,28 @@ function _updateAutoPinnedParticipant({ dispatch, getState }) {
         dispatch(pinParticipant(null));
     }
 }
+
+
+StateListenerRegistry.register(
+    state => (state['features/base/participants'].find(p => p.local) || {}).role,
+    (role, store) => {
+        if (role === 'moderator') {
+            // we became moderator
+            const { conference } = store.getState()['features/base/conference'];
+
+            const { tableViewSeats, isTableViewMuttingEnabled } = store.getState()['features/video-layout'];
+
+            conference
+            && conference.sendCommand(
+                ENABLE_TABLE_VIEW_MUTTING,
+                { value: isTableViewMuttingEnabled },
+            );
+
+            conference
+            && conference.sendCommand(
+                SET_TABLE_VIEW_SEATS,
+                { value: tableViewSeats },
+            );
+        }
+    }
+);

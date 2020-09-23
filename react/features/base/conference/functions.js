@@ -320,7 +320,9 @@ export function sendLocalParticipant(
         avatarURL,
         email,
         features,
-        name
+        name,
+        raisedHand,
+        requiredSeat
     } = getLocalParticipant(stateful);
 
     avatarID && conference.sendCommand(AVATAR_ID_COMMAND, {
@@ -335,6 +337,14 @@ export function sendLocalParticipant(
 
     if (features && features['screen-sharing'] === 'true') {
         conference.setLocalParticipantProperty('features_screen-sharing', true);
+    }
+
+    if (requiredSeat !== undefined) {
+        conference.setLocalParticipantProperty('requiredSeat', requiredSeat);
+    }
+
+    if (raisedHand !== undefined) {
+        conference.setLocalParticipantProperty('raisedHand', raisedHand);
     }
 
     conference.setDisplayName(name);

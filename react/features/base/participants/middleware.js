@@ -1,6 +1,8 @@
 // @flow
 
 import UIEvents from '../../../../service/UI/UIEvents';
+import { openDisplayNamePrompt } from '../../display-name';
+
 import { NOTIFICATION_TIMEOUT, showNotification } from '../../notifications';
 import { CALLING, INVITED } from '../../presence-status';
 import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from '../app';
@@ -23,6 +25,8 @@ import {
     PARTICIPANT_LEFT,
     PARTICIPANT_UPDATED
 } from './actionTypes';
+import { FORCE_SEAT_POSITION } from '../../video-layout/actionTypes';
+
 import {
     localParticipantIdChanged,
     localParticipantJoined,
@@ -43,6 +47,8 @@ import {
     getParticipantCount,
     getParticipantDisplayName
 } from './functions';
+
+
 import { PARTICIPANT_JOINED_FILE, PARTICIPANT_LEFT_FILE } from './sounds';
 
 declare var APP: Object;
@@ -134,10 +140,12 @@ MiddlewareRegistry.register(store => next => action => {
 
     case PARTICIPANT_UPDATED:
         return _participantJoinedOrUpdated(store, next, action);
+
     }
 
     return next(action);
 });
+
 
 /**
  * Syncs the redux state features/base/participants up with the redux state
@@ -145,6 +153,7 @@ MiddlewareRegistry.register(store => next => action => {
  * participants no longer relevant to the latter. Introduced to address an issue
  * with multiplying thumbnails in the filmstrip.
  */
+
 StateListenerRegistry.register(
     /* selector */ state => getCurrentConference(state),
     /* listener */ (conference, { dispatch, getState }) => {
@@ -228,6 +237,11 @@ StateListenerRegistry.register(
                         break;
                     case 'raisedHand': {
                         _raiseHandUpdated(store, conference, participant.getId(), newValue);
+                        break;
+                    }
+                    case 'requiredSeat': {
+                        _requiredSeatUpdated(
+                            store, conference, participant.getId(), newValue);
                         break;
                     }
                     default:
@@ -360,7 +374,7 @@ function _maybePlaySounds({ getState, dispatch }, action) {
  * @returns {Object} The value returned by {@code next(action)}.
  */
 function _participantJoinedOrUpdated({ dispatch, getState }, next, action) {
-    const { participant: { avatarURL, e2eeEnabled, email, id, local, name, raisedHand } } = action;
+    const { participant: { avatarURL, e2eeEnabled, email, id, local, fromModerator, name, raisedHand, requiredSeat } } = action;
 
     // Send an external update of the local participant's raised hand state
     // if a new raised hand state is defined in the action.
@@ -372,6 +386,35 @@ function _participantJoinedOrUpdated({ dispatch, getState }, next, action) {
                 && conference.setLocalParticipantProperty(
                     'raisedHand',
                     raisedHand);
+        }
+    }
+
+    // Send an external update of the local participant's required Seat state
+    // if a new raised hand state is defined in the action.
+    if (typeof requiredSeat !== 'undefined') {
+        const { conference } = getState()['features/base/conference'];
+
+        if (!local && fromModerator) {
+            conference && conference.sendCommandOnce(
+                FORCE_SEAT_POSITION,
+                {
+                    attributes: {
+                        id,
+                        local: true,
+                        requiredSeat
+                    }
+                });
+        } else if (local) {
+            conference
+                && conference.setLocalParticipantProperty(
+                    'requiredSeat',
+                    // eslint-disable-next-line eqeqeq
+                    requiredSeat == undefined ? requiredSeat : `${requiredSeat}`);
+
+            if (Number.isInteger(Number.parseInt(requiredSeat, 10))
+            && !getLocalParticipant(getState)?.name) {
+                dispatch(openDisplayNamePrompt(undefined));
+            }
         }
     }
 
@@ -437,6 +480,45 @@ function _raiseHandUpdated({ dispatch, getState }, conference, participantId, ne
             },
             titleKey: 'notify.raisedHand'
         }, NOTIFICATION_TIMEOUT));
+    }
+}
+
+
+/**
+ * Handles participant seat.
+ *
+ * @param {Function} dispatch - The Redux dispatch function.
+ * @param {Object} conference - The conference for which we got an update.
+ * @param {string?} participantId - The ID of the participant from which we got an update. If undefined,
+ * we update the local participant.
+ * @param {boolean} newValue - The new value of the raise hand status.
+ * @returns {void}
+ */
+function _requiredSeatUpdated({ dispatch, getState }, conference, participantId, newValue) {
+    const localParticipant = getLocalParticipant(getState());
+    const localPid = localParticipant.id;
+    const pid = participantId || localPid;
+
+    const requiredSeat = Number.isInteger(Number.parseInt(newValue, 10)) ? Number.parseInt(newValue, 10) : null;
+
+    dispatch(participantUpdated({
+        conference,
+        id: pid,
+        requiredSeat
+    }));
+
+    if (localPid !== pid) {
+        const { requiredSeat: localRequiredSeat } = localParticipant;
+
+        if (Number.isInteger(localRequiredSeat) && localRequiredSeat === requiredSeat) {
+            // somebody else assigned to my seat
+            dispatch(participantUpdated({
+                conference,
+                local: true,
+                id: localPid,
+                requiredSeat: null
+            }));
+        }
     }
 }
 

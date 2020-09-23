@@ -49,6 +49,7 @@ const KeyboardShortcut = {
             const num = parseInt(key, 10);
 
             if (!($(':focus').is('input[type=text]')
+                || $(':focus').is('input[type=number]')
                 || $(':focus').is('input[type=password]')
                 || $(':focus').is('textarea'))) {
                 if (_shortcuts.has(key)) {
@@ -65,6 +66,7 @@ const KeyboardShortcut = {
                 return;
             }
             if (!($(':focus').is('input[type=text]')
+                || $(':focus').is('input[type=number]')
                 || $(':focus').is('input[type=password]')
                 || $(':focus').is('textarea'))) {
                 if (this._getKeyboardKey(e).toUpperCase() === ' ') {

@@ -15,6 +15,9 @@ declare var interfaceConfig: Object;
  * @returns {string}
  */
 export function getCurrentLayout(state: Object) {
+    if (shouldDisplayTableView(state)) {
+        return LAYOUTS.TABLE_VIEW;
+    } else
     if (shouldDisplayTileView(state)) {
         return LAYOUTS.TILE_VIEW;
     } else if (interfaceConfig.VERTICAL_FILMSTRIP) {
@@ -113,4 +116,50 @@ export function shouldDisplayTileView(state: Object = {}) {
     );
 
     return !shouldDisplayNormalMode;
+}
+
+/**
+ * Selector for determining if the UI layout should be in tile view. Tile view
+ * is determined by more than just having the tile view setting enabled, as
+ * one-on-one calls should not be in tile view, as well as etherpad editing.
+ *
+ * @param {Object} state - The redux state.
+ * @returns {boolean} True if tile view should be displayed.
+ */
+export function shouldDisplayTableView(state: Object = {}) {
+    return Boolean(
+        state['features/video-layout']
+            && state['features/video-layout'].tableViewEnabled
+            && (!state['features/etherpad']
+                || !state['features/etherpad'].editing)
+
+            // Truthy check is needed for interfaceConfig to prevent errors on
+            // mobile which does not have interfaceConfig. On web, tile view
+            // should never be enabled for filmstrip only mode.
+            && (typeof interfaceConfig === 'undefined'
+                || !interfaceConfig.filmStripOnly)
+            && !getPinnedParticipant(state)
+    );
+}
+
+
+/**
+ * Selector for determining the number of seats to display in table view.
+ *
+ * @param {Object} state - The redux state.
+ * @returns {number} Number of seath to display.
+ */
+export function getTableViewSeats(state: Object = {}) {
+    return state['features/video-layout'].tableViewSeats;
+}
+
+
+/**
+ * Selector for determining the state of the table  view mutting.
+ *
+ * @param {Object} state - The redux state.
+ * @returns {boolean} State of the mutting effect.
+ */
+export function isTableViewMuttingEnabledSelector(state: Object = {}) {
+    return state['features/video-layout'].isTableViewMuttingEnabled;
 }

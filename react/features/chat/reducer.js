@@ -1,7 +1,7 @@
 // @flow
 
 import { SET_ACTIVE_MODAL_ID } from '../base/modal';
-import { ReducerRegistry } from '../base/redux';
+import { ReducerRegistry, UrlRegistry } from '../base/redux';
 
 import {
     ADD_MESSAGE,
@@ -11,6 +11,7 @@ import {
 } from './actionTypes';
 import { CHAT_VIEW_MODAL_ID } from './constants';
 
+const STORE_NAME = 'features/chat';
 const DEFAULT_STATE = {
     isOpen: false,
     lastReadMessage: undefined,
@@ -18,7 +19,11 @@ const DEFAULT_STATE = {
     privateMessageRecipient: undefined
 };
 
-ReducerRegistry.register('features/chat', (state = DEFAULT_STATE, action) => {
+UrlRegistry.register(STORE_NAME, {
+    isOpen: 'chatIsOpen'
+}, DEFAULT_STATE);
+
+ReducerRegistry.register(STORE_NAME, (state = DEFAULT_STATE, action) => {
     switch (action.type) {
     case ADD_MESSAGE: {
         const newMessage = {

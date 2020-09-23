@@ -647,6 +647,8 @@
             "document": "Activer/désactiver le document partagé",
             "download": "Télécharger nos applications",
             "feedback": "Laisser des commentaires",
+            "followMe": "Activer Follow-me",
+            "unfollowMe": "Désactiver Follow-me",
             "fullScreen": "Activer/désactiver le plein écran",
             "hangup": "Quitter la conversation",
             "help": "Aide",
@@ -674,6 +676,9 @@
             "toggleCamera": "Changer de caméra",
             "videomute": "Activer/désactiver la vidéo",
             "videoblur": "Activer/désactiver le flou de la vidéo",
+            "tileViewEnable": "Activer la vue tuile",
+            "largeViewEnable": "Activer la vue large",
+            "fishbowlViewEnable": "Activer la vue Fishbowl",
             "muteEveryone": "Mettre tout le monde en sourdine",
             "moreOptions": "Afficher plus d'options",
             "toggleFilmstrip": "Basculer la bande de film"
@@ -694,6 +699,8 @@
         "exitFullScreen": "Quitter le mode plein écran",
         "exitTileView": "Quitter le mode mosaïque",
         "feedback": "Laisser des commentaires",
+        "followMe": "Activer Follow-me",
+        "unfollowMe": "Désactiver Follow-me",
         "hangup": "Quitter",
         "help": "Aide",
         "invite": "Inviter des participants",
@@ -733,6 +740,10 @@
         "videomute": "Démarrer / Arrêter la caméra",
         "startvideoblur": "Flouter mon arrière plan",
         "stopvideoblur": "Désactiver le flou d'arrière-plan",
+        "tileViewEnable": "Activer la vue tuile",
+        "largeViewEnable": "Activer la vue large",
+        "fishbowlViewEnable": "Activer la vue Fishbowl",
+        "muteEveryone": "Mettre tout le monde en sourdine",
         "noAudioSignalDialInDesc": "Vous pouvez également composer un numéro en utilisant :",
         "noAudioSignalDialInLinkDesc": "Numéros d'appel"
     },
@@ -831,6 +842,42 @@
         "terms": "Termes",
         "title": "Système de vidéoconférence sécurisé, riche en fonctionnalités et gratuit",
         "getHelp": "Obtenir de l'aide"
+    },
+    "fishbowl": {
+        "full": {
+            "main": "Le Fishbowl est plein",
+            "leave": "Pour partir, cliquez sur le siège vide"
+        },
+        "help": {
+            "action": "Cliquez sur le siège vide",
+            "leave": "pour quiter le bocal",
+            "join":  "pour rejoindre le bocal"
+        },
+        "activityIndication": {
+            "title" : "Discussion Fishbowl",
+            "prev": "précédent",
+            "next": "suivant",
+            "done": "C'est parti",
+            "mute": { 
+                "enable": "Activer",
+                "disable": "Désactiver"
+            },
+            "steps": [
+                ["Pour la meilleure expérience, tout le monde doit utiliser la vue Fishbowl", "<br/>", "L'URL pour y accéder directement est ", "<a href={{url}} target='_blank'>{{url}}</a>"],
+                ["Pour l'instant, le FishBowl n'est pas actif: Tout le monde peut s'entendre", "<br/>", "Rejoignez le Fishbowl, pour que l'on puisse vous entendre lorsque le FishBowl sera actif."],
+                ["Expliquez le mécanisme du Fishbowl :","Seulement les personnes à l'intérieur peuvent parler"],
+                ["Demander à une personne de rejoindre le FishBowl :", "Les autres participants l'entendront également"],
+                [
+                    "Lorsque le Fishbowl est plein, vous avez deux solutions:",
+                    " - attendre que quelqu'un parte",
+                    " - ou rajouter un siège",
+                    "<br/>",
+                    "Maintenant, demandez à une seconde personne de rejoindre le Fishbowl, puis rajoutez un siège"
+                ],
+                ["Félicitations !",  "<br/>","Souvenez-vous, pour permettre à la discussion de continuer, vous devez toujours laisser un siège libre dans le Fishbowl"],
+                ["Activer le FishBowl et démarrer la session"]
+            ]
+        }
     },
     "lonelyMeetingExperience": {
         "button": "Inviter d'autres personnes",

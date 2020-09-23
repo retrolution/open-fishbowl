@@ -56,6 +56,13 @@ window.addEventListener('beforeunload', () => {
     getJitsiMeetTransport().dispose();
 });
 
+const locationURL = window.sessionStorage.getItem('locationURL');
+
+if (locationURL) {
+    window.sessionStorage.removeItem('locationURL');
+    window.location = locationURL;
+}
+
 const globalNS = getJitsiMeetGlobalNS();
 
 globalNS.entryPoints = {

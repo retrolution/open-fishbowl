@@ -121,3 +121,11 @@
         margin-bottom: 100px !important;
     }
 }
+
+#filmstripRemoteVideos {
+    transition: all .5s linear 0s;
+}
+
+.tile-view .chat__open #filmstripRemoteVideos {
+    width: calc(100vw - 375px);
+}

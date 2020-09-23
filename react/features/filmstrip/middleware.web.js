@@ -6,7 +6,8 @@ import { CLIENT_RESIZED } from '../base/responsive-ui';
 import {
     getCurrentLayout,
     LAYOUTS,
-    shouldDisplayTileView
+    shouldDisplayTileView,
+    shouldDisplayTableView
 } from '../video-layout';
 
 import { SET_HORIZONTAL_VIEW_DIMENSIONS, SET_TILE_VIEW_DIMENSIONS } from './actionTypes';
@@ -26,6 +27,7 @@ MiddlewareRegistry.register(store => next => action => {
         const layout = getCurrentLayout(state);
 
         switch (layout) {
+        case LAYOUTS.TABLE_VIEW:
         case LAYOUTS.TILE_VIEW: {
             const { gridDimensions } = state['features/filmstrip'].tileViewDimensions;
             const { clientHeight, clientWidth } = state['features/base/responsive-ui'];
@@ -52,7 +54,9 @@ MiddlewareRegistry.register(store => next => action => {
     case SET_TILE_VIEW_DIMENSIONS: {
         const state = store.getState();
 
-        if (shouldDisplayTileView(state)) {
+        if (shouldDisplayTableView(state)) {
+            Filmstrip.resizeThumbnailsForTableTileView(true);
+        } else if (shouldDisplayTileView(state)) {
             const { width, height } = state['features/filmstrip'].tileViewDimensions.thumbnailSize;
 
             // Once the thumbnails are reactified this should be moved there too.

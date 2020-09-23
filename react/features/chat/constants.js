@@ -29,3 +29,4 @@ export const MESSAGE_TYPE_LOCAL = 'local';
  * The {@code messageType} of remote messages.
  */
 export const MESSAGE_TYPE_REMOTE = 'remote';
+

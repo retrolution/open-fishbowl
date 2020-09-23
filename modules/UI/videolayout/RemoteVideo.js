@@ -47,12 +47,68 @@ function createContainer(spanId) {
         <div class = 'displayNameContainer'></div>
         <div class = 'avatar-container'></div>
         <div class ='presence-label-container'></div>
-        <span class = 'remotevideomenu'></span>`;
+        <span class = 'remotevideomenu'></span>
+        <span class = 'remote-video-resize-handle'></span>
+        `;
 
     const remoteVideosContainer
         = document.getElementById('filmstripRemoteVideosContainer');
     const localVideoContainer
         = document.getElementById('localVideoTileViewContainer');
+
+
+    container.addEventListener('mousedown', e => {
+        if (e.target !== e.target.closest('.remote-video-resize-handle')) {
+            return;
+        }
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        const rect = e.target.closest('.videocontainer').getBoundingClientRect();
+        const offsetX = e.clientX; // x position within the element.
+        const offsetY = e.clientY; // y position within the element.
+
+        container.style.top = rect.top - 5;
+        container.style.left = rect.left - 5;
+        container.style.position = 'absolute';
+        container.style['z-index'] = 4;
+
+        const moveListener = moveEvent => {
+            container.style.top = rect.top + moveEvent.clientY - offsetY - 5;
+            container.style.left = rect.left + moveEvent.clientX - offsetX - 5;
+        };
+
+        container.parentElement.addEventListener('mousemove', moveListener, true);
+
+        const onmouseup = upEvent => {
+            upEvent.preventDefault();
+            upEvent.stopImmediatePropagation();
+
+            container.parentElement.removeEventListener('mousemove', moveListener, true);
+            document.removeEventListener('mouseup', onmouseup, true);
+        };
+        const onclick = clickEvent => {
+            clickEvent.preventDefault();
+            clickEvent.stopImmediatePropagation();
+
+            container.parentElement.removeEventListener('mousemove', moveListener, true);
+            container.removeEventListener('click', onclick, true);
+        };
+
+        document.addEventListener('mouseup', onmouseup, true);
+        container.addEventListener('click', onclick, true);
+
+        const dblclick = () => {
+            container.style.position = 'relative';
+            container.style.top = 'initial';
+            container.style.left = 'initial';
+
+            container.removeEventListener('dblclick', dblclick);
+        };
+
+        container.addEventListener('dblclick', dblclick);
+    }, true);
+
 
     remoteVideosContainer.insertBefore(container, localVideoContainer);
 
@@ -193,7 +249,7 @@ export default class RemoteVideo extends SmallVideo {
         const currentLayout = getCurrentLayout(APP.store.getState());
         let remoteMenuPosition;
 
-        if (currentLayout === LAYOUTS.TILE_VIEW) {
+        if (currentLayout === LAYOUTS.TILE_VIEW || currentLayout === LAYOUTS.TABLE_VIEW) {
             remoteMenuPosition = 'left top';
         } else if (currentLayout === LAYOUTS.VERTICAL_FILMSTRIP_VIEW) {
             remoteMenuPosition = 'left bottom';
@@ -505,6 +561,22 @@ export default class RemoteVideo extends SmallVideo {
 
         if (!isVideo) {
             this._audioStreamElement = streamElement;
+
+            const currentLayout = getCurrentLayout(APP.store.getState());
+
+            if (currentLayout === LAYOUTS.TABLE_VIEW) {
+                const state = APP.store.getState();
+                const participant = state['features/base/participants'].find(p => p.id === this.id);
+                const isTable = state['features/video-layout'].tableViewEnabled
+        && state['features/video-layout'].isTableViewMuttingEnabled;
+
+                if (participant) {
+                    const hasVolume = isTable ? Number.isInteger(Number.parseInt(participant.requiredSeat, 10)) : true;
+
+                    this._setAudioVolume(hasVolume ? 1 : 0);
+                }
+            }
+
 
             // If the remote video menu was created before the audio stream was
             // attached we need to update the menu in order to show the volume

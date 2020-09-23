@@ -4,7 +4,8 @@ import type { Dispatch } from 'redux';
 
 import {
     SCREEN_SHARE_PARTICIPANTS_UPDATED,
-    SET_TILE_VIEW
+    SET_TILE_VIEW,
+    SET_TABLE_VIEW
 } from './actionTypes';
 import { shouldDisplayTileView } from './functions';
 
@@ -39,6 +40,23 @@ export function setParticipantsWithScreenShare(participantIds: Array<string>) {
 export function setTileView(enabled: ?boolean) {
     return {
         type: SET_TILE_VIEW,
+        enabled
+    };
+}
+
+/**
+ * Creates a (redux) action which signals to set the UI layout to be tabled view
+ * or not.
+ *
+ * @param {boolean} enabled - Whether or not tile view should be shown.
+ * @returns {{
+    *     type: SET_TILE_VIEW,
+    *     enabled: boolean
+    * }}
+    */
+export function setTableView(enabled: boolean) {
+    return {
+        type: SET_TABLE_VIEW,
         enabled
     };
 }

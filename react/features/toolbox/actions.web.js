@@ -4,7 +4,8 @@ import type { Dispatch } from 'redux';
 
 import {
     FULL_SCREEN_CHANGED,
-    SET_FULL_SCREEN
+    SET_FULL_SCREEN,
+    SET_TILE_MENU_VISIBLE
 } from './actionTypes';
 import {
     clearToolboxTimeout,
@@ -145,5 +146,21 @@ export function showToolbox(timeout: number = 0): Object {
                 dispatch(setToolboxTimeoutMS(interfaceConfig.TOOLBAR_TIMEOUT));
             }
         }
+    };
+}
+
+/**
+ * Action to set tile menu visible.
+ *
+ * @param {boolean} visible - Set the tile Menu.
+ * @returns {{
+    *  type: SET_TILE_MENU_VISIBLE,
+    *  visible: boolean
+    *  }}
+*/
+export function setTileMenuVisible(visible) {
+    return {
+        type: SET_TILE_MENU_VISIBLE,
+        visible
     };
 }

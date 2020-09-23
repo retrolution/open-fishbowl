@@ -101,6 +101,8 @@ $sidebarWidth: 375px;
  * Misc.
  */
 $borderRadius: 4px;
+$defaultWatermarkLink: '../images/watermark.png';
+$invertWatermarkLink: '../images/watermark_fishbowl.png';
 $popoverMenuPadding: 13px;
 $happySoftwareBackground: transparent;
 $desktopAppDragBarHeight: 25px;
@@ -113,7 +115,7 @@ $zindex0: 0;
 $zindex1: 1;
 $zindex2: 2;
 $zindex3: 3;
-$toolbarBackgroundZ: 4;
+$toolbarBackgroundZ: 5;
 $filmstripVideosZ: 5;
 $zindex10: 10;
 $reloadZ: 20;

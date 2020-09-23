@@ -6,5 +6,6 @@
 export const LAYOUTS = {
     HORIZONTAL_FILMSTRIP_VIEW: 'horizontal-filmstrip-view',
     TILE_VIEW: 'tile-view',
+    TABLE_VIEW: 'table-view',
     VERTICAL_FILMSTRIP_VIEW: 'vertical-filmstrip-view'
 };

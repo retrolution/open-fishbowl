@@ -13,13 +13,27 @@ import {
     MiddlewareRegistry,
     PersistenceRegistry,
     ReducerRegistry,
-    StateListenerRegistry
+    StateListenerRegistry,
+    UrlRegistry
 } from '../../redux';
 import { SoundCollection } from '../../sounds';
 import { appWillMount, appWillUnmount } from '../actions';
 import logger from '../logger';
 
 declare var APP: Object;
+
+
+const mergeInitialState = () => {
+
+    const initialState = _.merge({},
+        UrlRegistry.getInitialState(),
+        PersistenceRegistry.getPersistedState(),
+        UrlRegistry.getPersistedState()
+    );
+
+    return initialState;
+};
+
 
 /**
  * The type of the React {@code Component} state of {@link BaseApp}.
@@ -198,7 +212,9 @@ export default class BaseApp extends Component<*, State> {
         }
 
         const store = createStore(
-            reducer, PersistenceRegistry.getPersistedState(), middleware);
+            reducer,
+            mergeInitialState()
+            , middleware);
 
         // StateListenerRegistry
         StateListenerRegistry.subscribe(store);
@@ -249,3 +265,4 @@ export default class BaseApp extends Component<*, State> {
      */
     _renderDialogContainer: () => React$Element<*>
 }
+

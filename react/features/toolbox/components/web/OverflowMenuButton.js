@@ -32,7 +32,12 @@ type Props = {
     /**
      * Invoked to obtain translated strings.
      */
-    t: Function
+    t: Function,
+
+    /**
+     * Custon icon
+     */
+    icon: Object,
 };
 
 /**
@@ -75,7 +80,7 @@ class OverflowMenuButton extends Component<Props> {
                     <ToolbarButton
                         accessibilityLabel =
                             { t('toolbar.accessibilityLabel.moreActions') }
-                        icon = { IconMenuThumb }
+                        icon = { this.props.icon || IconMenuThumb }
                         onClick = { this._onToggleDialogVisibility }
                         toggled = { isOpen }
                         tooltip = { t('toolbar.moreActions') } />

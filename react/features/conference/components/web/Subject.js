@@ -3,12 +3,13 @@
 import React, { Component } from 'react';
 
 import { getConferenceName } from '../../../base/conference/functions';
-import { getParticipantCount } from '../../../base/participants/functions';
+import { getParticipantCount, isLocalParticipantModerator } from '../../../base/participants/functions';
 import { connect } from '../../../base/redux';
 import { isToolboxVisible } from '../../../toolbox/functions.web';
 import ConferenceTimer from '../ConferenceTimer';
 
 import ParticipantsCount from './ParticipantsCount';
+import { setSubject } from '../../../base/conference';
 
 /**
  * The type of the React {@code Component} props of {@link Subject}.
@@ -29,7 +30,14 @@ type Props = {
     /**
      * Indicates whether the component should be visible or not.
      */
-    _visible: boolean
+    _visible: boolean,
+
+    /**
+     * indicate if the subject cna be editted by the user
+     */
+    _canEditSubject: boolean,
+
+
 };
 
 /**
@@ -39,6 +47,29 @@ type Props = {
  */
 class Subject extends Component<Props> {
 
+    state = {
+        edition: false,
+        edited: null
+    }
+
+    _onChange = e => {
+        this.setState({ edited: e.target.value });
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    _onBlur = e => {
+        this.props.dispatch(setSubject(this.state.edited));
+        this.setState({ edition: false, edited: null });
+    }
+
+
+    _onSubjectClick = () => {
+        if (this.props._canEditSubject) {
+            this.setState({ edition: true, edited: this.props._subject });
+        }
+    }
+
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -46,11 +77,22 @@ class Subject extends Component<Props> {
      * @returns {ReactElement}
      */
     render() {
-        const { _showParticipantCount, _subject, _visible } = this.props;
+        const { _showParticipantCount, _subject, _visible, _canEditSubject } = this.props;
 
         return (
-            <div className = { `subject ${_visible ? 'visible' : ''}` }>
-                <span className = 'subject-text'>{ _subject }</span>
+            <div className = { `subject ${_visible ? 'visible' : ''} ${_canEditSubject ? 'can-edit-subject' : ''}` }>
+                { this.state.edition
+                    ? <input
+                        className = 'subject-input'
+                        type='text'
+                        value = { this.state.edited }
+                        onBlur = { this._onBlur }
+                        onChange = { this._onChange }
+                        />
+                    : <span
+                        className = 'subject-text'
+                        onClick = { this._onSubjectClick }>{ _subject }</span>
+                }
                 { _showParticipantCount && <ParticipantsCount /> }
                 <ConferenceTimer />
             </div>
@@ -75,7 +117,8 @@ function _mapStateToProps(state) {
     return {
         _showParticipantCount: participantCount > 2,
         _subject: getConferenceName(state),
-        _visible: isToolboxVisible(state) && participantCount > 1
+        _visible: isToolboxVisible(state) && participantCount > 1,
+        _canEditSubject: isLocalParticipantModerator(state)
     };
 }
 

@@ -45,6 +45,7 @@ StateListenerRegistry.register(
         const state = store.getState();
 
         switch (layout) {
+        case LAYOUTS.TABLE_VIEW:
         case LAYOUTS.TILE_VIEW: {
             const { clientHeight, clientWidth } = state['features/base/responsive-ui'];
             const { isOpen } = state['features/chat'];

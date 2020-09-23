@@ -82,6 +82,77 @@ export function getLocalParticipant(stateful: Object | Function) {
     return participants.find(p => p.local);
 }
 
+
+/**
+ * Returns the currently selected participant.
+ * Usefull in table view.
+ *
+ * @param {(Function|Object|Participant[])} stateful - The redux state
+ * features/base/participants, the (whole) redux state, or redux's
+ * {@code getState} function to be used to retrieve the state
+ * features/base/participants.
+ * @returns {(Participant|undefined)}
+ */
+export function getSelectedParticipant(stateful: Object | Function) {
+    const participants = _getAllParticipants(stateful);
+
+    return participants.find(p => p.selected);
+}
+
+/**
+ * Returns the currently selected participant.
+ * Usefull in table view.
+ *
+ * @param {(Function|Object|Participant[])} stateful - The redux state
+ * features/base/participants, the (whole) redux state, or redux's.
+ * @param {number} requiredSeatIndex - The seat index aimed
+ * {@code getState} function to be used to retrieve the state
+ * features/base/participants.
+ * @returns {(Participant|undefined)}
+ */
+export function getParticipanByRequiredSeatIndex(stateful: Object | Function, requiredSeatIndex: number) {
+    if (requiredSeatIndex === undefined || requiredSeatIndex === null) {
+        return undefined;
+    }
+    const participants = _getAllParticipants(stateful);
+
+    return participants.find(p => p.requiredSeat === requiredSeatIndex);
+}
+
+/**
+ * Returns the particpant without or with incorrect seats.
+ * Usefull in table view.
+ *
+ * @param {(Function|Object|Participant[])} stateful - The redux state
+ * features/base/participants, the (whole) redux state, or redux's.
+ * @param {number} seats - The number of seats
+ * {@code getState} function to be used to retrieve the state
+ * features/base/participants.
+ * @returns {(Participant|undefined)}
+ */
+export function getParticipantsWithoutSeat(stateful: Object | Function, seats: number) {
+    const participants = _getAllParticipants(stateful);
+
+    return participants.filter(p => !Number.isInteger(p.requiredSeat) || p.requiredSeat >= seats);
+}
+
+/**
+ * Returns the particpant with valid seats.
+ * Usefull in table view.
+ *
+ * @param {(Function|Object|Participant[])} stateful - The redux state
+ * features/base/participants, the (whole) redux state, or redux's.
+ * @param {number} seats - The number of seats
+ * {@code getState} function to be used to retrieve the state
+ * features/base/participants.
+ * @returns {(Participant|undefined)}
+ */
+export function getParticipantsWithSeat(stateful: Object | Function, seats: number) {
+    const participants = _getAllParticipants(stateful);
+
+    return participants.filter(p => Number.isInteger(p.requiredSeat) && p.requiredSeat < seats);
+}
+
 /**
  * Normalizes a display name so then no invalid values (padding, length...etc)
  * can be set.

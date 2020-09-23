@@ -136,6 +136,7 @@ function _participant(state: Object = {}, action) {
     case SET_LOADABLE_AVATAR_URL:
     case PARTICIPANT_UPDATED: {
         const { participant } = action; // eslint-disable-line no-shadow
+
         let { id } = participant;
         const { local } = participant;
 

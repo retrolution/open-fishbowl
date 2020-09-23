@@ -3,7 +3,7 @@
 import { LOCKED_LOCALLY, LOCKED_REMOTELY } from '../../room-lock';
 import { CONNECTION_WILL_CONNECT, SET_LOCATION_URL } from '../connection';
 import { JitsiConferenceErrors } from '../lib-jitsi-meet';
-import { assign, ReducerRegistry, set } from '../redux';
+import { assign, ReducerRegistry, set, PersistenceRegistry } from '../redux';
 
 import {
     AUTH_STATUS_CHANGED,
@@ -36,6 +36,10 @@ const DEFAULT_STATE = {
     password: undefined,
     passwordRequired: undefined
 };
+
+PersistenceRegistry.register('features/base/conference', {
+    followMeEnabled: true
+}, DEFAULT_STATE);
 
 /**
  * Listen for actions that contain the conference object, so that it can be

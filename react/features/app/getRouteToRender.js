@@ -124,11 +124,9 @@ function _getWebWelcomePageRoute(state): Promise<Route> {
         }
     } else {
         // Web: if the welcome page is disabled, go directly to a random room.
+        const { protocol, host, pathname, search } = window.location;
 
-        let href = window.location.href;
-
-        href.endsWith('/') || (href += '/');
-        route.href = href + generateRoomWithoutSeparator();
+        route.href = `${protocol}//${host}${pathname}${generateRoomWithoutSeparator()}${search}`;
     }
 
     return Promise.resolve(route);

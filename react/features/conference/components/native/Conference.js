@@ -251,6 +251,7 @@ class Conference extends AbstractConference<Props, *> {
             <>
                 {/*
                   * The LargeVideo is the lowermost stacking layer.
+                  * TODO ADD TABLE
                   */
                     _shouldDisplayTileView
                         ? <TileView onClick = { this._onClick } />

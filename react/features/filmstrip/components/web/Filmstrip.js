@@ -18,6 +18,7 @@ import { setFilmstripHovered, setFilmstripVisible } from '../../actions';
 import { shouldRemoteVideosBeVisible } from '../../functions';
 
 import Toolbar from './Toolbar';
+import { FishBowl } from './FishBowl';
 
 declare var APP: Object;
 declare var interfaceConfig: Object;
@@ -82,6 +83,21 @@ type Props = {
      * Whether or not the filmstrip videos should currently be displayed.
      */
     _visible: boolean,
+
+    /**
+     * Whether or not the chat is visible or not
+     */
+    _isChatOpen: boolean,
+
+    /**
+     * Whether or not the table mode is active
+     */
+    _isTableViewEnable: boolean,
+
+    /**
+     * Whether or not the tile view mode is active
+     */
+    _isTileViewEnable: boolean,
 
     /**
      * The redux {@code dispatch} function.
@@ -185,15 +201,23 @@ class Filmstrip extends Component <Props> {
             // Also adding 7px for the scrollbar.
             filmstripStyle.maxWidth = (interfaceConfig.FILM_STRIP_MAX_HEIGHT || 120) + 25;
             break;
+        case LAYOUTS.TABLE_VIEW:
         case LAYOUTS.TILE_VIEW: {
             // The size of the side margins for each tile as set in CSS.
-            const { _columns, _rows, _filmstripWidth } = this.props;
+            const { _columns, _rows, _filmstripWidth, _isChatOpen } = this.props;
 
             if (_rows > _columns) {
                 remoteVideoContainerClassName += ' has-overflow';
             }
 
             filmstripRemoteVideosContainerStyle.width = _filmstripWidth;
+            if (this.props._isTableViewEnable) {
+                filmstripRemoteVideosContainerStyle.background = 'white';
+                filmstripRemoteVideosContainerStyle.position = 'absolute';
+                filmstripRemoteVideosContainerStyle.width = _isChatOpen ? 'calc(100vw - 375px)' : '100%';
+                filmstripRemoteVideosContainerStyle.top = '0';
+                filmstripRemoteVideosContainerStyle.height = '100vh';
+            }
             break;
         }
         }
@@ -212,7 +236,8 @@ class Filmstrip extends Component <Props> {
 
         return (
             <div
-                className = { `filmstrip ${this.props._className}` }
+                className = { `filmstrip ${this.props._className}
+                 ${this.props._isChatOpen ? 'chat__open' : ''}` }
                 style = { filmstripStyle }>
                 { toolbar }
                 <div
@@ -233,12 +258,14 @@ class Filmstrip extends Component <Props> {
                           * scrolling thumbnails in Firefox; otherwise, the flex
                           * thumbnails resize instead of causing overflow.
                           */}
+                        {/* the div below is where the magic happen */}
                         <div
                             className = { remoteVideoContainerClassName }
                             id = 'filmstripRemoteVideosContainer'
                             onMouseOut = { this._onMouseOut }
                             onMouseOver = { this._onMouseOver }
                             style = { filmstripRemoteVideosContainerStyle }>
+                            { this.props._isTableViewEnable && <FishBowl /> }
                             <div id = 'localVideoTileViewContainer' />
                         </div>
                     </div>
@@ -380,6 +407,11 @@ function _mapStateToProps(state) {
         visible ? '' : ' hidden'}`;
     const { gridDimensions = {}, filmstripWidth } = state['features/filmstrip'].tileViewDimensions;
 
+    const { isOpen: _isChatOpen } = state['features/chat'];
+
+    const _isTableViewEnable = state['features/video-layout'].tableViewEnabled;
+    const _isTileViewEnable = state['features/video-layout'].tileViewEnabled;
+
     return {
         _className: className,
         _columns: gridDimensions.columns,
@@ -391,7 +423,10 @@ function _mapStateToProps(state) {
         _hovered: hovered,
         _rows: gridDimensions.rows,
         _videosClassName: videosClassName,
-        _visible: visible
+        _visible: visible,
+        _isChatOpen,
+        _isTableViewEnable,
+        _isTileViewEnable
     };
 }
 

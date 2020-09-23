@@ -9,7 +9,7 @@ import {
 } from '../base/participants';
 import { MiddlewareRegistry } from '../base/redux';
 import { setFilmstripVisible } from '../filmstrip';
-import { setTileView } from '../video-layout';
+import { setTileView, setTableView } from '../video-layout';
 
 import {
     setFollowMeModerator,
@@ -138,6 +138,15 @@ function _onFollowMeCommand(attributes = {}, id, store) {
     if (oldState.tileViewEnabled !== attributes.tileViewEnabled) {
         store.dispatch(setTileView(attributes.tileViewEnabled === 'true'));
     }
+
+    if (oldState.tableViewEnabled !== attributes.tableViewEnabled) {
+        store.dispatch(setTableView(attributes.tableViewEnabled === 'true'));
+        if (attributes.tableViewEnabled !== 'true'){
+            // need to override __prevTileView
+            store.dispatch(setTileView(attributes.tileViewEnabled === 'true'));
+        }
+    }
+
 
     // For now gate etherpad checks behind a web-app check to be extra safe
     // against calling a web-app global.

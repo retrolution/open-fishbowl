@@ -27,6 +27,26 @@ const Filmstrip = {
         return isFilmstripVisible(APP.store) ? getVerticalFilmstripVisibleAreaWidth() : 0;
     },
 
+    resizeThumbnailsForTableTileView(forceUpdate = false) {
+        const thumbs = this._getThumbs(!forceUpdate);
+
+        if (thumbs.localThumb) {
+            thumbs.localThumb.css({
+                display: 'none'
+            });
+        }
+
+        if (thumbs.remoteThumbs) {
+            thumbs.remoteThumbs.css({
+                display: 'none'
+            });
+        }
+
+        $('.avatar-container').css({
+            display: 'none'
+        });
+    },
+
     /**
      * Resizes thumbnails for tile view.
      *
@@ -36,30 +56,33 @@ const Filmstrip = {
      * @returns {void}
      */
     resizeThumbnailsForTileView(width, height, forceUpdate = false) {
+        // TODO chick if table;
+        // return this.resizeThumbnailsForTableTileView(width, height, forceUpdate);
         const thumbs = this._getThumbs(!forceUpdate);
         const avatarSize = height / 2;
 
         if (thumbs.localThumb) {
             thumbs.localThumb.css({
+                display: 'block',
                 'padding-top': '',
                 height: `${height}px`,
-                'min-height': `${height}px`,
-                'min-width': `${width}px`,
+                'min-height': 'initial',
+                'min-width': 'initial',
                 width: `${width}px`
             });
         }
 
         if (thumbs.remoteThumbs) {
             thumbs.remoteThumbs.css({
+                display: 'block',
                 'padding-top': '',
                 height: `${height}px`,
-                'min-height': `${height}px`,
-                'min-width': `${width}px`,
                 width: `${width}px`
             });
         }
 
         $('.avatar-container').css({
+            display: 'block',
             height: `${avatarSize}px`,
             width: `${avatarSize}px`
         });

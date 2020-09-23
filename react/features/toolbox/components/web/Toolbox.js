@@ -23,7 +23,10 @@ import {
     IconRaisedHand,
     IconRec,
     IconShareDesktop,
-    IconShareVideo
+    IconShareVideo,
+    IconTileView,
+    IconLargeView,
+    IconFishbowl
 } from '../../../base/icons';
 import {
     getLocalParticipant,
@@ -61,8 +64,10 @@ import {
 } from '../../../subtitles';
 import {
     TileViewButton,
+    toggleTileView,
+    setTileView,
+    setTableView,
     shouldDisplayTileView,
-    toggleTileView
 } from '../../../video-layout';
 import {
     OverflowMenuVideoQualityItem,
@@ -71,6 +76,7 @@ import {
 import {
     setFullScreen,
     setOverflowMenuVisible,
+    setTileMenuVisible,
     setToolbarHovered
 } from '../../actions';
 import { isToolboxVisible } from '../../functions';
@@ -84,6 +90,7 @@ import OverflowMenuButton from './OverflowMenuButton';
 import OverflowMenuProfileItem from './OverflowMenuProfileItem';
 import ToolbarButton from './ToolbarButton';
 import VideoSettingsButton from './VideoSettingsButton';
+import FollowMeButton from './FollowMeButton';
 
 /**
  * The type of the React {@code Component} props of {@link Toolbox}.
@@ -158,6 +165,11 @@ type Props = {
     _overflowMenuVisible: boolean,
 
     /**
+     * Whether or not the tile menu is visible.
+     */
+    _tileMenuVisible: boolean,
+
+    /**
      * Whether or not the local participant's hand is raised.
      */
     _raisedHand: boolean,
@@ -190,7 +202,22 @@ type Props = {
     /**
      * Invoked to obtain translated strings.
      */
-    t: Function
+    t: Function,
+
+    /**
+     * Boolean to indicated of layout should be large.
+     */
+    _layoutLarge: boolean,
+
+     /**
+     * Boolean to indicated of layout should be fishbowl.
+     */
+    _layoutFishbowl: boolean,
+
+    /**
+     * Boolean to indicated of layout should be tile.
+     */
+    _layoutTile: boolean
 };
 
 /**
@@ -231,6 +258,7 @@ class Toolbox extends Component<Props, State> {
         this._onMouseOver = this._onMouseOver.bind(this);
         this._onResize = this._onResize.bind(this);
         this._onSetOverflowVisible = this._onSetOverflowVisible.bind(this);
+        this._onSetTileMenuVisible = this._onSetTileMenuVisible.bind(this);
 
         this._onShortcutToggleChat = this._onShortcutToggleChat.bind(this);
         this._onShortcutToggleFullScreen = this._onShortcutToggleFullScreen.bind(this);
@@ -244,6 +272,7 @@ class Toolbox extends Component<Props, State> {
         this._onToolbarOpenEmbedMeeting = this._onToolbarOpenEmbedMeeting.bind(this);
         this._onToolbarOpenVideoQuality = this._onToolbarOpenVideoQuality.bind(this);
         this._onToolbarToggleChat = this._onToolbarToggleChat.bind(this);
+
         this._onToolbarToggleFullScreen = this._onToolbarToggleFullScreen.bind(this);
         this._onToolbarToggleProfile = this._onToolbarToggleProfile.bind(this);
         this._onToolbarToggleRaiseHand = this._onToolbarToggleRaiseHand.bind(this);
@@ -251,6 +280,10 @@ class Toolbox extends Component<Props, State> {
         this._onToolbarToggleSharedVideo = this._onToolbarToggleSharedVideo.bind(this);
         this._onToolbarOpenLocalRecordingInfoDialog = this._onToolbarOpenLocalRecordingInfoDialog.bind(this);
         this._onShortcutToggleTileView = this._onShortcutToggleTileView.bind(this);
+
+        this._onTileMenuTileClick = this._onTileMenuTileClick.bind(this);
+        this._onTileMenuLargeClick = this._onTileMenuLargeClick.bind(this);
+        this._onTileMenuTableClick = this._onTileMenuTableClick.bind(this);
 
         this.state = {
             windowWidth: window.innerWidth
@@ -580,6 +613,21 @@ class Toolbox extends Component<Props, State> {
         this.props.dispatch(setOverflowMenuVisible(visible));
     }
 
+
+    _onSetTileMenuVisible: (boolean) => void;
+
+    /**
+     * Sets the visibility of the overflow menu.
+     *
+     * @param {boolean} visible - Whether or not the overflow menu should be
+     * displayed.
+     * @private
+     * @returns {void}
+     */
+    _onSetTileMenuVisible(visible) {
+        this.props.dispatch(setTileMenuVisible(visible));
+    }
+
     _onShortcutToggleChat: () => void;
 
     /**
@@ -716,6 +764,8 @@ class Toolbox extends Component<Props, State> {
         sendAnalytics(createToolbarEvent('invite'));
         this.props.dispatch(beginAddPeople());
     }
+
+
 
     _onToolbarOpenKeyboardShortcuts: () => void;
 
@@ -1076,9 +1126,79 @@ class Toolbox extends Component<Props, State> {
             this._shouldShowButton('help')
                 && <HelpButton
                     key = 'help'
-                    showLabel = { true } />
+                    showLabel = { true } />,
+            <FollowMeButton key='follow-me' showLabel = { true } />
         ];
     }
+
+    /**
+     * Create a action to set main view in tile.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onTileMenuTileClick() {
+        this.props.dispatch(setTileView(true));
+    }
+
+    /**
+     * Create a action to set main view in large.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onTileMenuLargeClick() {
+        this.props.dispatch(setTileView(false));
+    }
+
+    /**
+     * Create a action to set main view in fishbowl.
+     *
+     * @private
+     * @returns {void}
+     */
+    _onTileMenuTableClick() {
+        this.props.dispatch(setTableView(true));
+    }
+
+    /**
+     * Renders the list elements of the tile menu.
+     *
+     * @private
+     * @returns {Array<ReactElement>}
+     */
+    _renderTileMenuContent() {
+
+        const { t, _layoutLarge, _layoutFishbowl, _layoutTile } = this.props;
+
+        return [
+            <ToolbarButton
+                accessibilityLabel = { 'Use tile view' }
+                icon = { IconTileView }
+                key = 'tile'
+                onClick = { this._onTileMenuTileClick }
+                text = { 'Use tile view' }
+                toggled = { _layoutTile }
+                tooltip = { t('toolbar.tileViewEnable') } />,
+            <ToolbarButton
+                accessibilityLabel = { 'Use Fishbowl view' }
+                icon = { IconFishbowl }
+                key = 'table'
+                onClick = { this._onTileMenuTableClick }
+                text = { 'Use Fishbowl view' }
+                toggled = { _layoutFishbowl }
+                tooltip = { t('toolbar.fishbowlViewEnable') } />,
+            <ToolbarButton
+                accessibilityLabel = { 'Use Large view' }
+                icon = { IconLargeView }
+                key = 'large'
+                onClick = { this._onTileMenuLargeClick }
+                text = { 'Use Large view' }
+                toggled = { _layoutLarge }
+                tooltip = { t('toolbar.largeViewEnable') } />
+        ];
+    }
+
 
     /**
      * Renders a list of buttons that are moved to the overflow menu.
@@ -1205,6 +1325,8 @@ class Toolbox extends Component<Props, State> {
             t
         } = this.props;
         const overflowMenuContent = this._renderOverflowMenuContent();
+        const tileMenuContent = this._renderTileMenuContent();
+
         const overflowHasItems = Boolean(overflowMenuContent.filter(child => child).length);
         const toolbarAccLabel = 'toolbar.accessibilityLabel.moreActionsMenu';
         const buttonsLeft = [];
@@ -1302,7 +1424,7 @@ class Toolbox extends Component<Props, State> {
             <div className = 'toolbox-content'>
                 <div className = 'button-group-left'>
                     { buttonsLeft.indexOf('chat') !== -1
-                        && <div className = 'toolbar-button-with-badge'>
+                        && <div className = 'toolbar-button-with-badge toolbar-chat-button'>
                             <ToolbarButton
                                 accessibilityLabel = { t('toolbar.accessibilityLabel.chat') }
                                 icon = { IconChat }
@@ -1339,7 +1461,7 @@ class Toolbox extends Component<Props, State> {
                             } />
                     }
                     { buttonsRight.indexOf('tileview') !== -1
-                        && <TileViewButton /> }
+                        && tileMenuContent }
                     { buttonsRight.indexOf('invite') !== -1
                         && <ToolbarButton
                             accessibilityLabel =
@@ -1396,7 +1518,8 @@ function _mapStateToProps(state) {
     const sharedVideoStatus = state['features/shared-video'].status;
     const {
         fullScreen,
-        overflowMenuVisible
+        overflowMenuVisible,
+        tileMenuVisible
     } = state['features/toolbox'];
     const localParticipant = getLocalParticipant(state);
     const localRecordingStates = state['features/local-recording'];
@@ -1427,6 +1550,9 @@ function _mapStateToProps(state) {
 
     return {
         _chatOpen: state['features/chat'].isOpen,
+        _layoutLarge: !state['features/video-layout'].tileViewEnabled,
+        _layoutTile: state['features/video-layout'].tileViewEnabled && !state['features/video-layout'].tableViewEnabled,
+        _layoutFishbowl: state['features/video-layout'].tableViewEnabled,
         _conference: conference,
         _desktopSharingEnabled: desktopSharingEnabled,
         _desktopSharingDisabledTooltipKey: desktopSharingDisabledTooltipKey,
@@ -1439,6 +1565,7 @@ function _mapStateToProps(state) {
         _localRecState: localRecordingStates,
         _locked: locked,
         _overflowMenuVisible: overflowMenuVisible,
+        _tileMenuVisible: tileMenuVisible,
         _raisedHand: localParticipant.raisedHand,
         _screensharing: localVideo && localVideo.videoType === 'desktop',
         _sharingVideo: sharedVideoStatus === 'playing'
@@ -1450,3 +1577,5 @@ function _mapStateToProps(state) {
 }
 
 export default translate(connect(_mapStateToProps)(Toolbox));
+
+

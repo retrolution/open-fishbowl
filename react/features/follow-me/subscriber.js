@@ -59,6 +59,14 @@ StateListenerRegistry.register(
     /* selector */ state => state['features/video-layout'].tileViewEnabled,
     /* listener */ _sendFollowMeCommand);
 
+
+/**
+ * Subscribes to changes to the table view setting in the user interface of the
+ * local participant.
+ */
+StateListenerRegistry.register(
+    /* selector */ state => state['features/video-layout'].tableViewEnabled,
+    /* listener */ _sendFollowMeCommand);
 /**
  * Private selector for returning state from redux that should be respected by
  * other participants while follow me is enabled.
@@ -73,7 +81,8 @@ function _getFollowMeState(state) {
         filmstripVisible: state['features/filmstrip'].visible,
         nextOnStage: pinnedParticipant && pinnedParticipant.id,
         sharedDocumentVisible: state['features/etherpad'].editing,
-        tileViewEnabled: shouldDisplayTileView(state)
+        tileViewEnabled: shouldDisplayTileView(state),
+        tableViewEnabled: state['features/video-layout'].tableViewEnabled
     };
 }
 

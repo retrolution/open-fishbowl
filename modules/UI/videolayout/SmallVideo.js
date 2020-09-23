@@ -18,6 +18,7 @@ import {
 } from '../../../react/features/base/participants';
 import { ConnectionIndicator } from '../../../react/features/connection-indicator';
 import { DisplayName } from '../../../react/features/display-name';
+
 import {
     DominantSpeakerIndicator,
     RaisedHandIndicator,
@@ -71,7 +72,6 @@ const DISPLAY_VIDEO_WITH_NAME = 3;
  * @constant
  */
 const DISPLAY_AVATAR_WITH_NAME = 4;
-
 
 /**
  *
@@ -168,6 +168,7 @@ export default class SmallVideo {
 
         if (isVideo) {
             element.setAttribute('muted', 'true');
+            element.muted = true;
             element.setAttribute('playsInline', 'true'); /* for Safari on iOS to work */
         } else if (config.startSilent) {
             element.muted = true;
@@ -722,7 +723,7 @@ export default class SmallVideo {
         const participantCount = getParticipantCount(state);
         let statsPopoverPosition, tooltipPosition;
 
-        if (currentLayout === LAYOUTS.TILE_VIEW) {
+        if (currentLayout === LAYOUTS.TILE_VIEW || currentLayout === LAYOUTS.TABLE_VIEW) {
             statsPopoverPosition = 'right top';
             tooltipPosition = 'right';
         } else if (currentLayout === LAYOUTS.VERTICAL_FILMSTRIP_VIEW) {
@@ -806,7 +807,10 @@ export default class SmallVideo {
 
         return $source.parents('.displayNameContainer').length === 0
             && $source.parents('.popover').length === 0
-            && !event.target.classList.contains('popover');
+            && !event.target.classList.contains('popover')
+            && !event.target.classList.contains('videocontainer');
+
+        // shoud be hoverlay not container
     }
 
     /**
@@ -853,13 +857,34 @@ export default class SmallVideo {
      * Sets the size of the thumbnail.
      */
     _setThumbnailSize() {
+        /* this.$container.css({
+            position: 'absolute',
+            'z-index': 4,
+            top: 0,
+            left: 0,
+            width: '200px',
+            height: '200px'
+        });
+        return*/
+        // TODO add new layout and new size and position
         const layout = getCurrentLayout(APP.store.getState());
         const heightToWidthPercent = 100
                 / (this.isLocal ? interfaceConfig.LOCAL_THUMBNAIL_RATIO : interfaceConfig.REMOTE_THUMBNAIL_RATIO);
 
         switch (layout) {
+        case LAYOUTS.TABLE_VIEW: {
+            this.$container.css({
+                display: 'none'
+            });
+            break;
+        }
         case LAYOUTS.VERTICAL_FILMSTRIP_VIEW: {
             this.$container.css('padding-top', `${heightToWidthPercent}%`);
+            this.$container.css({
+                display: 'block',
+                'padding-top': `${heightToWidthPercent}%`
+            });
+
             this.$avatar().css({
                 height: '50%',
                 width: `${heightToWidthPercent / 2}%`
@@ -876,6 +901,7 @@ export default class SmallVideo {
                 const avatarSize = height / 2;
 
                 this.$container.css({
+                    display: 'block',
                     height: `${height}px`,
                     'min-height': `${height}px`,
                     'min-width': `${width}px`,
@@ -897,9 +923,10 @@ export default class SmallVideo {
                 const avatarSize = height / 2;
 
                 this.$container.css({
+                    display: 'block',
                     height: `${height}px`,
-                    'min-height': `${height}px`,
-                    'min-width': `${width}px`,
+                    'min-height': '',
+                    'min-width': '',
                     width: `${width}px`
                 });
                 this.$avatar().css({

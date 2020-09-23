@@ -201,6 +201,10 @@ function _conferenceJoined({ dispatch, getState }, next, action) {
     // that should cover the described use case as part of the effort to
     // implement the conferenceWillLeave action for web.
     beforeUnloadHandler = () => {
+        const state = getState();
+        const { locationURL } = state['features/base/connection'];
+
+        window.sessionStorage.setItem('locationURL', locationURL);
         dispatch(conferenceWillLeave(conference));
     };
     window.addEventListener('beforeunload', beforeUnloadHandler);

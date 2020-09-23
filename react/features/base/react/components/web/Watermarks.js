@@ -39,6 +39,11 @@ type Props = {
     _showJitsiWatermark: boolean,
 
     /**
+     * If the Jitsi watermark color should be inverted or not.
+     */
+    _invertLeftWatermak: boolean,
+
+    /**
      * The default value for the Jitsi logo URL.
      */
     defaultJitsiLogoURL: ?string,
@@ -110,6 +115,7 @@ class Watermarks extends Component<Props, State> {
         return (
             <div>
                 {
+
                     this._renderJitsiWatermark()
                 }
                 {
@@ -176,7 +182,7 @@ class Watermarks extends Component<Props, State> {
             };
 
             reactElement = (<div
-                className = 'watermark leftwatermark'
+                className = {`watermark leftwatermark ${this.props._invertLeftWatermak ? 'invertwatermark' : ''}`}
                 style = { style } />);
 
             if (_logoLink) {
@@ -263,10 +269,14 @@ function _mapStateToProps(state, ownProps) {
         _logoLink = JITSI_WATERMARK_LINK;
     }
 
+    const shouldShowWatermark = _showJitsiWatermark && !state['features/chat'].isOpen;
+    const invertLeftWatermak = state['features/video-layout'].tableViewEnabled;
+
     return {
         _logoLink,
         _logoUrl,
-        _showJitsiWatermark
+        _showJitsiWatermark: shouldShowWatermark,
+        _invertLeftWatermak: invertLeftWatermak
     };
 }
 

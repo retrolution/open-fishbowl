@@ -35,6 +35,8 @@
 .videocontainer {
     position: relative;
     text-align: center;
+    resize: both;
+    overflow: hidden;
 
     &__background {
         @include topLeft();
@@ -213,6 +215,15 @@
 #largeVideoContainer {
     overflow: hidden;
     text-align: center;
+}
+
+#largeVideoCanvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
 }
 
 #largeVideoContainer {
@@ -419,6 +430,20 @@
 .remote-video-menu-trigger {
     margin-top: 7px;
 }
+
+.remote-video-resize-handle {
+    position: absolute;
+    bottom: 8px;
+    right: 25px;
+    height: 18px;
+    width: 18px;
+    background: black;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAGiSURBVGiB5ZhBcoMwDEWtTDY9VblVsgvdwYm7/F2AZwixkWzJRkz/KjGR9R8GRXYIDQVgBDC1zNFMq/moa0HszF8LImP+GhCMed8QQvM+IQrN+4LImH8lxh7uIHLm12tvWsf8QByZzwG0gLgpGH5330ci+uGCiGgOITyZufpoczdfiWvJFZDEdhWA78z4IcBRbIlIO0FOe9NE1CSX6B1A567SNB8qu0rJI2SZTzJZ1CCMLQYAMCTyjZbmxRVDsQL6/wmteQ2AGsLCvBagGsLKvAVAMYSleSsAMUTGvHdNIYRAWMrUuf1IveZbOKsTtNHiHennzLvenxoYbzT2EynmkRcXSwgLgCLz1hBagCrzlhAaAJV5K4haABPzzGRDKwBYttObSbcr0budZvPduR8Q0Qzga/3MHptoVZrvf2zqjwTF0Ygm1kSbl/yjOnHvwFFsFyUq1LS7ngXgYktkeTb6kBhBun0//Wz0426mViBx50WlsjVEypR47FTzUZmV4ORrF1gI4ct8lBDCp/koBsK3+agMxDXMR6Gyi3UlLKVzbJnjD8kxYu+DcsZnAAAAAElFTkSuQmCC) no-repeat center center;
+    background-size: contain;
+    z-index: $zindex10;
+    visibility: hidden;
+}
+
 
 /**
  * Audio indicator on video thumbnails.
@@ -675,6 +700,12 @@
     video {
         visibility: visible;
     }
+
+    .remote-video-resize-handle {
+        visibility: visible;
+    }
+
+
 }
 
 .display-avatar-only {

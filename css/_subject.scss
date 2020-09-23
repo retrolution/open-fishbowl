@@ -29,4 +29,10 @@
         font-size: 15px;
         opacity: 0.6;
     }
+
+    &.can-edit-subject .subject-text,
+    &.can-edit-subject .subject-input {
+        cursor: text;
+        pointer-events: initial;
+    }
 }

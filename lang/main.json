@@ -63,7 +63,7 @@
     "chat": {
         "error": "Error: your message was not sent. Reason: {{error}}",
         "fieldPlaceHolder": "Type your message here",
-        "messagebox": "Type a message",
+        "messagebox": "Anything to say ?",
         "messageTo": "Private message to {{recipient}}",
         "noMessagesMessage": "There are no messages in the meeting yet. Start a conversation here!",
         "nickname": {
@@ -699,6 +699,8 @@
             "grantModerator": "Grant Moderator",
             "hangup": "Leave the call",
             "help": "Help",
+            "followMe": "Activate Follow-me",
+            "unfollowMe": "Disable Follow-me",
             "invite": "Invite people",
             "kick": "Kick participant",
             "lobbyButton": "Enable/disable lobby mode",
@@ -727,7 +729,10 @@
             "toggleCamera": "Toggle camera",
             "toggleFilmstrip": "Toggle filmstrip",
             "videomute": "Toggle mute video",
-            "videoblur": "Toggle video blur"
+            "videoblur": "Toggle video blur",
+            "tileViewEnable": "Enable tile view",
+            "largeViewEnable": "Enable large view",
+            "fishbowlViewEnable": "Enable Fishbowl view"
         },
         "addPeople": "Add people to your call",
         "audioOnlyOff": "Disable low bandwidth mode",
@@ -747,6 +752,8 @@
         "exitFullScreen": "Exit full screen",
         "exitTileView": "Exit tile view",
         "feedback": "Leave feedback",
+        "followMe": "Activate Follow-me",
+        "unfollowMe": "Disable Follow-me",
         "hangup": "Leave",
         "help": "Help",
         "invite": "Invite people",
@@ -785,6 +792,9 @@
         "stopSharedVideo": "Stop YouTube video",
         "talkWhileMutedPopup": "Trying to speak? You are muted.",
         "tileViewToggle": "Toggle tile view",
+        "tileViewEnable": "Toggle tile view",
+        "largeViewEnable": "Toggle large view",
+        "fishbowlViewEnable": "Toggle Fishbowl view",
         "toggleCamera": "Toggle camera",
         "videomute": "Start / Stop camera",
         "startvideoblur": "Blur my background",
@@ -886,6 +896,38 @@
         "sendFeedback": "Send feedback",
         "terms": "Terms",
         "title": "Secure, fully featured, and completely free video conferencing"
+    },
+    "fishbowl": {
+        "full": {
+            "main": "The Fishbowl is full.",
+            "leave": "To leave, click on the empty seat"
+        },
+        "help": {
+            "action": "Click on the empty seat",
+            "leave": "to leave the table",
+            "join":  "to join the table"
+        },
+        "activityIndication": {
+            "title" : "Fishbowl Introduction",
+            "prev": "PREV",
+            "next": "NEXT",
+            "done": "Activate",
+            "mute": { 
+                "enable": "Enable Mutting",
+                "disable": "Disable Mutting"
+            },
+            "steps": [
+                ["Force everybody to use the table view", "Url to Join is", "<a target='_blank' href={{url}}>{{url}}</a>"],
+                ["For now, the fishbowl is not active: Everybody can hear you", "Join the FishBowl so people will later be able to hear you"],
+                ["Explain the Fishbowl mecanism : Only people inside the circle can speak"],
+                ["Ask One person to join the bowl : people can hear him"],
+                ["When the bowl is full, you can either ask someone to leave, or add a seat.","<br/>",
+                    "Now ask a second person to join the bowl, then add a seat"
+                ],
+                ["Good Job !", "Remember, to keep the discussion going there must be a seat available"],
+                ["Session can start"]
+            ]
+        }
     },
     "lonelyMeetingExperience": {
         "button": "Invite others",

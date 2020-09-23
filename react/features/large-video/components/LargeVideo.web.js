@@ -39,6 +39,14 @@ type Props = {
     _noAutoPlayVideo: boolean
 }
 
+
+const muteRef = ref => {
+    if (ref) {
+        ref.volume = 0;
+        ref.muted = true;
+    }
+};
+
 /**
  * Implements a React {@link Component} which represents the large video (a.k.a.
  * the conference participant who is on the local stage) on Web/React.
@@ -46,6 +54,12 @@ type Props = {
  * @extends Component
  */
 class LargeVideo extends Component<Props> {
+
+    state = {
+        box: undefined
+    }
+
+
     /**
      * Implements React's {@link Component#componentDidMount}.
      *
@@ -101,7 +115,8 @@ class LargeVideo extends Component<Props> {
                             autoPlay = { !this.props._noAutoPlayVideo }
                             id = 'largeVideo'
                             muted = { true }
-                            playsInline = { true } /* for Safari on iOS to work */ />
+                            playsInline = { true } /* for Safari on iOS to work */
+                            ref = { muteRef } />
                     </div>
                 </div>
                 { interfaceConfig.DISABLE_TRANSCRIPTION_SUBTITLES

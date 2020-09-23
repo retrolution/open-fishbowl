@@ -35,6 +35,11 @@ type Props = {
     autoPlay: boolean,
 
     /**
+     * forwarded style
+     */
+    style: React.CSSProperties,
+
+    /**
      * Used to determine the value of the autoplay attribute of the underlying
      * video element.
      */
@@ -55,6 +60,7 @@ class Video extends Component<Props> {
      * @static
      */
     static defaultProps = {
+        style: {},
         className: '',
         autoPlay: true,
         id: '',
@@ -148,7 +154,8 @@ class Video extends Component<Props> {
                 className = { this.props.className }
                 id = { this.props.id }
                 playsInline = { this.props.playsinline }
-                ref = { this._setVideoElement } />
+                ref = { this._setVideoElement }
+                style = { this.props.style } />
         );
     }
 
