@@ -1,0 +1,391 @@
+/* the file is to style the table view, aka fishbowl */
+
+.table-view-container {
+    position: absolute;
+    margin: auto;
+    background: transparent;
+    height: 500px;
+    width: 500px;
+    z-index: 0;
+
+    &:after {
+        content: ' ';
+        position: absolute;
+        z-index: -1;
+        top: -10;
+        left: -10;
+        right:-10;
+        bottom: -10;
+        background-color: transparent;
+        border-radius: 570px;
+        border: 10px solid #380E7F;
+        animation-duration: 10s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+    }
+}
+
+/*
+@media only screen and (max-width: 800px)  {
+    .table-view-container{
+        transform: scale(0.7);
+    } 
+}
+
+@media only screen and (max-width: 600px)  {
+    .table-view-container{
+        transform: scale(0.5);
+    } 
+}
+
+@media only screen and (max-height: 800px)  {
+    .table-view-container{
+        transform: scale(0.8);
+    } 
+}
+
+@media only screen and (max-height: 660px)  {
+    .table-view-container{
+        transform: scale(0.7);
+    } 
+}
+*/
+
+@keyframes rainbow-shadow {
+    0%, 100%{
+        border-color: #380e7f;
+        box-shadow: 0px 0px 5px 0px rgba(56,15,127, .2);
+    }
+    8%{
+        border-color: rgb(255,0,255);
+        box-shadow: 0px 0px 5px 0px rgb(255,0,255);
+    }
+    16%{
+        border-color: rgb(255,0,127);
+        box-shadow: 0px 0px 25px 0px rgb(255,0,127) ;
+    }
+    25%{
+        border-color: rgb(255,0,0);
+        box-shadow: 0px 0px 5px 0px rgb(255,0,0);
+    }
+    33%{
+        border-color: rgb(255,127,0);
+        box-shadow: 0px 0px 25px 0px rgb(255,127,0);
+    }
+    41%{
+        border-color: rgb(255,255,0);
+        box-shadow: 0px 0px 5px 0px rgb(255,255,0);
+    }
+    50%{
+        border-color: rgb(127,255,0);
+        box-shadow: 0px 0px 25px 0px rgb(127,255,0);
+    }
+    58%{
+        border-color: rgb(0,255,0);
+        box-shadow: 0px 0px 5px 0px rgb(0,255,0);
+    }
+    66%{
+        border-color: rgb(0,255,127);
+        box-shadow: 0px 0px 25px 0px rgb(0,255,127);
+    }
+    75%{
+        border-color: rgb(0,255,255);
+        box-shadow: 0px 0px 5px 0px rgb(0,255,255);
+    }
+    83%{
+        border-color: rgb(0,127,255);
+        box-shadow: 0px 0px 25px 0px rgb(0,127,255);
+    }
+    91%{
+        border-color: rgb(0,0,255);
+        box-shadow: 0px 0px 5px 0px rgb(0,0,255);
+    }
+}
+
+
+
+
+@keyframes rainbow-after{
+    0%, 100%{
+        border-color: #380e7f;
+        transform: scale(1);
+    }
+    8%{
+        border-color: rgb(255,0,255);
+        transform: scale(1.01);
+        }
+    16%{
+        border-color: rgb(255,0,127);
+        transform: scale(1);
+        }
+    25%{
+        border-color: rgb(255,0,0);
+        transform: scale(0.98);
+        }
+    33%{
+        border-color: rgb(255,127,0);
+        transform: scale(1);
+        }
+    41%{
+        border-color: rgb(255,255,0);
+        transform: scale(1.02);
+        }
+    50%{
+        border-color: rgb(127,255,0);
+        transform: scale(1);
+        }
+    58%{
+        border-color: rgb(0,255,0);
+        transform: scale(0.98);
+        }
+    66%{
+        border-color: rgb(0,255,127);
+        transform: scale(1);
+        }
+    75%{
+        border-color: rgb(0,255,255);
+        transform: scale(1.02);
+        }
+    83%{
+        border-color: rgb(0,127,255);
+        transform: scale(1);
+        }
+    91%{
+        border-color: rgb(0,0,255);
+        transform: scale(0.98);
+    }
+}
+
+.table-view-container_inactive {
+    &:after{
+        border-style: dotted;
+    }
+}
+
+.table-view-container_full {
+    background-color: transparent;
+    animation-name: rainbow-border;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    &:after {
+        animation-name: rainbow-after;
+    }
+
+    &.table-view-container_inactive{
+        &:after{
+            animation-name: rainbow-after;
+        }
+    }
+}
+
+.table-view__seat-container { 
+    position: absolute;
+    margin: auto;
+    text-align: center;
+    background-color: rgba(200, 200, 200, 0.3);
+    cursor: pointer;
+    justify-content: center;
+    overflow: hidden;
+    display: flex;
+}
+
+.table-view__seat-container_selected {
+    box-shadow: 0px 0px 5px 5px #380E7F;
+}
+
+.table-view__seat-container_selected:focus {
+    box-shadow: 0px 0px 5px 5px red;
+}
+
+@keyframes empty-shadow{
+    0%, 100%{
+        box-shadow: 0px 0px 5px 5px #380E7F;
+    }
+    50% {
+        box-shadow: 0px 0px 2px 2px #380E7F;
+    }
+}
+
+.table-view__seat-container_forceEmpty {
+    animation-name: empty-shadow;
+    animation-duration: 10s;
+    animation-timing-function: ease;
+    animation-iteration-count: infinite;
+}
+
+
+.inc-button {
+    height: 35px;
+    width: 35px;
+    border: 1px solid #333;
+    border-radius: 35px;
+    background: white;
+    color: #666;
+    padding: 0px;
+    &:focus{
+        outline: none;
+    }
+}
+
+.table-view__inc-button_dev {
+    position: absolute;
+    right: calc(10% + 15px);
+    bottom: calc(10% - 15px);
+}
+
+.table-view__inc-buttons_background {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    right: 6%;
+    bottom: 6%;
+}
+
+.table-view__inc-button_inc {
+    position: absolute;
+    right: calc(10% - 15px);
+    bottom: calc(10% + 15px);
+}
+
+.table-view__inc-button_mic {
+    position: absolute;
+    right: calc(10% + 48px);
+    bottom: calc(10% - 42px);
+     svg {
+         fill: #ccc;
+     }
+}
+
+
+.table-view__activity--container{
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #1F2C3A;
+    width: 375px;
+    font-size: 18px;
+    word-wrap: break-word;
+    color: white;
+}
+
+.table-view__activity--container li {
+    user-select: auto;
+    padding-bottom: 3em;
+}
+
+.activity-indication {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 2em;
+    padding-top: 8em;
+    padding-bottom: 8em;
+    box-sizing: border-box;
+
+}
+
+.activity-indication__buttons {
+    display: flex;
+}
+
+.activity-indication__content * {
+    user-select: text;
+}
+
+.activity-indication__button {
+    flex-grow: 1;
+    height: 50px
+}
+
+.activity-indication__close{
+    position: absolute;
+    cursor: pointer;
+    right: 1em;
+    top: 1em;
+}
+
+.fishbowl-seat__name_over, .fishbowl-seat__name_only, .fishbowl-seat__name_input {
+    position: absolute;
+    top: 0;
+    margin: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    background: rgba(0,0,0,.4); 
+}
+
+
+.fishbowl-seat__name_over {
+    display: none;
+}
+
+.fishbowl-seat__name_only{
+    display: block;
+}
+
+.fishbowl-seat__container:hover {
+    .fishbowl-seat__name_over,
+    .fishbowl-seat__name_only{
+        display: block;
+        height: 100%;
+    }
+}
+
+
+.fishbowl-seat_empty {
+    flex-grow: 1;
+    padding: 30%;
+}
+
+
+
+@keyframes dominant-shadow{
+    0%, 100%{
+        box-shadow: 0px 0px 3px 0px #165ECC;
+    }
+    50% {
+        box-shadow: 0px 0px 17px 0px #165ECC;
+    }
+}
+
+.table-view__seat-container_dominant {
+    animation-name: dominant-shadow;
+    animation-duration: 2s;
+    animation-timing-function: ease;
+    animation-iteration-count: infinite;
+}
+
+
+.fishbowl-seat_local {
+    .fishbowl-seat__name,
+    .fishbowl-seat__name_over {
+        cursor: text;
+    }
+}
+
+.fishbowl-seat_selected {
+    border:2px solid 380E7F;
+}
+
+.fishbowl-seat__name_over input.editdisplayname,
+.fishbowl-seat__name_only input.editdisplayname {
+    display: block;
+    height: 100%;
+    text-align: center;
+    margin: auto;
+    max-width: 150px;
+    border: none;
+    background: transparent;
+    color:white;
+}
+.table-view-tour-container.reactour__helper {
+    color: #222;
+}
+
+.reactour__dot, .reactour__dot:focus{
+    outline: none;
+}
