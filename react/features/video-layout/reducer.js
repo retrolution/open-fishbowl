@@ -32,7 +32,7 @@ const DEFAULT_STATE = {
      * @public
      * @type {boolean}
      */
-    tableViewEnabled: false,
+    tableViewEnabled: true,
 
 
     /**

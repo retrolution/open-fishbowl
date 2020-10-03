@@ -1,80 +1,29 @@
-# Jitsi Meet - Secure, Simple and Scalable Video Conferences
+# Open Fishbowl - Open-source implementation of the Fishbowl protocol
 
-Jitsi Meet is an open-source (Apache) WebRTC JavaScript application that uses [Jitsi Videobridge](https://jitsi.org/videobridge) to provide high quality, [secure](https://jitsi.org/security) and scalable video conferences. Jitsi Meet in action can be seen at [here at the session #482 of the VoIP Users Conference](http://youtu.be/7vFUVClsNh0).
+Open Fishbowl is the digital implementation of a well known conversational protocol,
+the Fishbowl. [See Fishbowl on Wikipedia](https://en.wikipedia.org/wiki/Fishbowl_(conversation))
 
-The Jitsi Meet client runs in your browser, without installing anything else on your computer. You can try it out at https://meet.jit.si.
+You can use the protocol by using going on https://retrolution.github.io/open-fishbowl
 
-Jitsi Meet allows very efficient collaboration. Users can stream their desktop or only some windows. It also supports shared document editing with Etherpad.
+This project is based on the [Jitsi Meet](https://github.com/jitsi/jitsi-meet) open source codebase, and adds a new layout to it. We are very gratefull of the amazing team behing Jitsi.
+We don't think this project would fit inside the Jitsi Repo as it does not fit with the general purpose of Jitsi. That is why we decided to go with a fork. The original Readme.md can be found [here](./JITSI_README.MD)
 
-## Installation
+# The team
 
-On the client side, no installation is necessary. You just point your browser to the URL of your deployment. This section is about installing a Jitsi Meet suite on your server and hosting your own conferencing service.
+This project is so the collaboration of two persons, [Romain Couturier](https://twitter.com/romaincouturier), Agile coach, facilitator and founder or [SuperTilt](https://supertilt.fr/) and [Maxence Dalmais](https://www.linkedin.com/in/maxencedalmais/) founder of [Retrolution](https://www.retrolution.co)
 
-Installing Jitsi Meet is a simple experience. For Debian-based system, following the [quick install](https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-quickstart) document, which uses the package system. You can also see a demonstration of the process in [this tutorial video](https://jitsi.org/tutorial).
+# Goal
 
-For other systems, or if you wish to install all components manually, see the [detailed manual installation instructions](https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-manual).
+![The fishbowl interface](./images/preview.png)
 
-Installation with Docker is also available. Please see the [instruction](https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker).
+The fishbowl is a conversational protocol which helps to split the discussion time across meeting participants. It is usefull when willing to get differents points of view on a topic. It can be quickly described as a round table with a dynamic list of participants.
 
-## Download
+# Implementation
 
-| Latest stable release | [![release](https://img.shields.io/badge/release-latest-green.svg)](https://github.com/jitsi/jitsi-meet/releases/latest) |
-|---|---|
+In the current implementation, one participant is the meeting Moderator. The moderator has super power that enable it to add or remove seat to/from the table, of change participants position.
 
-You can download Debian/Ubuntu binaries:
-* [stable](https://download.jitsi.org/stable/) ([instructions](https://jitsi.org/downloads/ubuntu-debian-installations-instructions/))
-* [testing](https://download.jitsi.org/testing/) ([instructions](https://jitsi.org/downloads/ubuntu-debian-installations-instructions-for-testing/))
-* [nightly](https://download.jitsi.org/unstable/) ([instructions](https://jitsi.org/downloads/ubuntu-debian-installations-instructions-nightly/))
+Other participants are by default outside the fishbowl, and the fishbowl is disable: the conversation an occure in a free way.
 
-You can download source archives (produced by ```make source-package```):
-* [source builds](https://download.jitsi.org/jitsi-meet/src/)
+Once the moderator activate the fishbowl, participants outside the fishbwol are automatically muted. Only participants with a seat inside the fishbowl can speak.
 
-### Mobile apps
-
-* [Android](https://play.google.com/store/apps/details?id=org.jitsi.meet)
-
-[<img src="resources/img/google-play-badge.png" height="50">](https://play.google.com/store/apps/details?id=org.jitsi.meet)
-
-* [Android (F-Droid)](https://f-droid.org/en/packages/org.jitsi.meet/)
-
-[<img src="resources/img/f-droid-badge.png" height="50">](https://f-droid.org/en/packages/org.jitsi.meet/)
-
-* [iOS](https://itunes.apple.com/us/app/jitsi-meet/id1165103905)
-
-[<img src="resources/img/appstore-badge.png" height="50">](https://itunes.apple.com/us/app/jitsi-meet/id1165103905)
-
-You can also sign up for our open beta testing here:
-
-* [Android](https://play.google.com/apps/testing/org.jitsi.meet)
-* [iOS](https://testflight.apple.com/join/isy6ja7S)
-
-## Release notes
-
-Release notes for Jitsi Meet are maintained on [this repository](https://github.com/jitsi/jitsi-meet-release-notes).
-
-## Development
-
-For web development see [here](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-web), and for mobile see [here](https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-mobile).
-
-## Contributing
-
-If you are looking to contribute to Jitsi Meet, first of all, thank you! Please
-see our [guidelines for contributing](CONTRIBUTING.md).
-
-## Embedding in external applications
-
-Jitsi Meet provides a very flexible way of embedding in external applications by using the [Jitsi Meet API](doc/api.md).
-
-## Security
-
-The security section here was starting to feel a bit too succinct for the complexity of the topic, so we created a post that covers the topic much more broadly here: https://jitsi.org/security
-
-The section on end-to-end encryption in that document is likely going to be one of the key points of interest: https://jitsi.org/security/#e2ee
-
-## Security issues
-
-For information on reporting security vulnerabilities in Jitsi Meet, see [SECURITY.md](./SECURITY.md).
-
-## Acknowledgements
-
-Jitsi Meet started out as a sample conferencing application using Jitsi Videobridge. It was originally developed by ESTOS' developer Philipp Hancke who then contributed it to the community where development continues with joint forces!
+This means that any participants willing to add something to the discussion, should first enter the fishbowl. But, the fishbowl as limited capacity and should always dispose of a free seat. When the fishbowl is full, somebody inside it should leave. If nobody wish to leave, this is the moderator responsability to remove someone.
