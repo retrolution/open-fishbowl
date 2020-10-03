@@ -144,7 +144,7 @@ form {
 .leftwatermark.invertwatermark {
     left: 32px;
     top: 32px;
-    background-image: url($invertWatermarkLink);
+    background-image: url($invertWatermarkLink) !important;
     background-position: center left;
     background-repeat: no-repeat;
     background-size: contain;
