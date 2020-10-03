@@ -200,7 +200,7 @@ function _restoreTileViewState({ dispatch, getState }) {
 StateListenerRegistry.register(
     state => getCurrentConference(state),
     (conference, { dispatch }, previousConference) => {
-        if (conference !== previousConference) {
+        if (conference !== previousConference && previousConference) {
             // conference changed, left or failed...
             // Clear tile view state.
             dispatch(setTileView());
